@@ -2,24 +2,13 @@
 #define __EVENT_COUNTER_H
 
 #include <cctype>
-#ifndef _MSC_VER
-#include <dirent.h>
-#endif
 #include <cinttypes>
 
 #include <cstring>
 
 #include <chrono>
 #include <vector>
-
-#include "linux-perf-events.h"
-#ifdef __linux__
-#include <libgen.h>
-#endif
-
-#if __APPLE__ &&  __aarch64__
 #include "apple_arm_events.h"
-#endif
 
 struct event_count {
   std::chrono::duration<double> elapsed;
@@ -91,45 +80,26 @@ struct event_aggregate {
 struct event_collector {
   event_count count{};
   std::chrono::time_point<std::chrono::steady_clock> start_clock{};
-
-#if defined(__linux__)
-  LinuxEvents<PERF_TYPE_HARDWARE> linux_events;
-  event_collector() : linux_events(std::vector<int>{
-    PERF_COUNT_HW_CPU_CYCLES,
-    PERF_COUNT_HW_INSTRUCTIONS,
-  }) {}
-  bool has_events() {
-    return linux_events.is_working();
-  }
-#elif __APPLE__ &&  __aarch64__
   AppleEvents apple_events;
   performance_counters diff;
+
   event_collector() : diff(0) {
     apple_events.setup_performance_counters();
   }
+
   bool has_events() {
     return apple_events.setup_performance_counters();
   }
-#else
-  event_collector() {}
-  bool has_events() {
-    return false;
-  }
-#endif
 
   inline void start() {
-#if defined(__linux)
-    linux_events.start();
-#elif __APPLE__ &&  __aarch64__
-    if(has_events()) { diff = apple_events.get_counters(); }
-#endif
+    if(has_events()) { 
+      diff = apple_events.get_counters(); 
+    }
     start_clock = std::chrono::steady_clock::now();
   }
+
   inline event_count& end() {
     const auto end_clock = std::chrono::steady_clock::now();
-#if defined(__linux)
-    linux_events.end(count.event_counts);
-#elif __APPLE__ &&  __aarch64__
     if(has_events()) {
       performance_counters end = apple_events.get_counters();
       diff = end - diff;
@@ -139,7 +109,6 @@ struct event_collector {
     count.event_counts[2] = diff.missed_branches;
     count.event_counts[3] = 0;
     count.event_counts[4] = diff.branches;
-#endif
     count.elapsed = end_clock - start_clock;
     return count;
   }
