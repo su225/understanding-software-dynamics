@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdalign.h>
 #include <string.h>
+#include <math.h>
 
 #include <arm_neon.h>
 
@@ -66,8 +67,12 @@ int main(int argc, char *argv[]) {
     double actual_matrix_sum = matrix_element_sum(c);
     printf("\telapsed time                 =  %.3f secs\n", elapsed_time);
     printf("\tFLOPS                        =  %s\n", humanize_floating_point_ops(2.0*N*N*N, elapsed_time));
-    printf("\tactual product matrix sum    =  %f\n", actual_matrix_sum);
-    printf("\texpected product matrix sum  =  %f\n", 38642123776.0);
-    printf("\tdifference                   =  %f\n", 38642123776 - actual_matrix_sum);
+
+    double diff = 38642123776 - actual_matrix_sum;
+    if (fabs(diff) > 1e-6) {
+        printf("\tactual product matrix sum    =  %f\n", actual_matrix_sum);
+        printf("\texpected product matrix sum  =  %f\n", 38642123776.0);
+        printf("\tdifference                   =  %f\n", diff);
+    }
     return 0;
 }
