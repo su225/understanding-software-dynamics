@@ -1,0 +1,1 @@
+const char* humanize_floating_point_ops(double ops, double elapsed_time);
