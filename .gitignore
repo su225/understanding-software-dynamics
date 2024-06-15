@@ -1,3 +1,5 @@
-perf_apple/benchmark
+**/benchmark
 query_sys_capabilities/query_cap
 .vscode/**
+
+**/*.s
