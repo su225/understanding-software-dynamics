@@ -1,13 +1,15 @@
 build:
-	clang -Iinclude/ -O3 -o benchmark main.c src/*.c -lm
+	clang -Iinclude/ -O3 -o benchmark main.c src/*.c -lm -framework CoreServices
 
 run-all:
-	@./benchmark --simple-ijk
+	# @./benchmark --simple-ijk
 	@./benchmark --simple-ikj
-	@./benchmark --simple-jik
-	@./benchmark --simple-jki
+	@./benchmark --vec-ikj
+	# @./benchmark --simple-jik
+	# @./benchmark --simple-jki
 	@./benchmark --simple-kij
-	@./benchmark --simple-kji
+	@./benchmark --vec-kij
+	# @./benchmark --simple-kji
 
 clean:
 	rm -rf benchmark
