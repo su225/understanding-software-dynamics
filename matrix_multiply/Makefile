@@ -11,20 +11,24 @@ run-all:
 	@./benchmark --vec-kij
 	# @./benchmark --simple-kji
 
+	@./benchmark --block --ijk --block_size 4
+	@./benchmark --block --ijk --block_size 8
 	@./benchmark --block --ijk --block_size 16
 	@./benchmark --block --ijk --block_size 32
 	@./benchmark --block --ijk --block_size 64
 	@./benchmark --block --ijk --block_size 128
 
+	@./benchmark --block --ikj --block_size 4
+	@./benchmark --block --ikj --block_size 8
 	@./benchmark --block --ikj --block_size 16
 	@./benchmark --block --ikj --block_size 32
 	@./benchmark --block --ikj --block_size 64
 	@./benchmark --block --ikj --block_size 128
 
-	@./benchmark --block --ikj --block_size 16 --vec
-	@./benchmark --block --ikj --block_size 32 --vec
-	@./benchmark --block --ikj --block_size 64 --vec
-	@./benchmark --block --ikj --block_size 128 --vec
+	# @./benchmark --block --ikj --block_size 16 --vec
+	# @./benchmark --block --ikj --block_size 32 --vec
+	# @./benchmark --block --ikj --block_size 64 --vec
+	# @./benchmark --block --ikj --block_size 128 --vec
 
 clean:
 	rm -rf benchmark
